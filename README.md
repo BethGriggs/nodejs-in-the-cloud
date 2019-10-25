@@ -433,11 +433,26 @@ Here are some ideas you could explore to further your learning.
 * Add a Singlestat that shows how many requests your Express.js app has responded to
 
 
-## Congratulations! 🎉
+### Congratulations! 🎉
 
 You now have an Express.js application deployed at scaling using Docker and Kubernetes, with automatic restart and full metrics based monitoring enabled!
 
 
-## Part 2: Ensuring consistent development of cloud native applications
+## Part 2: Building Cloud-Native Apps with Appsody
+
+### Introduction to Appsody
+
+Appsody is designed to help you develop containerized applications for the cloud.
+
+If you're a software developer, our aim is to greatly improve your developer experience by removing the burden of managing the full software development stack. With Appsody, you can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology. You can simply focus on the important stuff - developing application code!
+
+If you're responsible for defining standards for application runtime environments such as software levels, Appsody allows you to control the stacks that your developers use. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You get to implement and maintain your standards, ensuring consistency and reliability.
+
+For more background information - checkout out this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
+
+### Tutorial 
+
+This tutorial will teach you how to use build a new Cloud Native Express.js app with Appsody.
+
 
 https://medium.com/appsody/nodejs-express-cloud-native-70022e7d5371
