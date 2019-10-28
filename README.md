@@ -44,9 +44,7 @@ Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes 
 1. Select the Docker icon in the Menu Bar
 2. Click Preferences > Kubernetes Tab > Enable Kubernetes.
 
-It will take a few moments to install and start up, but when the indicator light in the bottom right corner is green, you're ready to go!
-
-If you already use Kubernetes, ensure that you are configured to use the `docker-for-desktop` cluster. To do so:
+It will take a few moments to install and start up. If you already use Kubernetes, ensure that you are configured to use the `docker-for-desktop` cluster. To do so:
 
 1. Select the Docker icon in the Menu Bar
 2. Click Kubernetes and select the `docker-for-desktop` context
@@ -115,7 +113,7 @@ Your application should now be visible at [http://localhost:3000](http://localho
 
 ### 2. Add Health Checks to your Application
 
-Kubernetes, and a number of other cloud deployment technologies, provide "Health Checking" as a system that allows the cloud deployment technology to monitor the deployed application and to take action should the application fail or report itself as "un-healthy".
+Kubernetes, and a number of other cloud deployment technologies, provide "Health Checking" as a system that allows the cloud deployment technology to monitor the deployed application and to take action should the application fail or report itself as "unhealthy".
 
 The simplest form of Health Check is process level health checking, where Kubernetes checks to see if the application process still exists and restarts the container (and therefore the application process) if it is not. This provides a basic restart capability but does not handle scenarios where the application exists but is un-responsive, or where it would be desirable to restart the application for other reasons (such as low memory availability due to a memory leak).
 
@@ -146,7 +144,7 @@ Add a Health Check endpoint to your Express.js application using the following s
    
 This has added a '/health' endpoint to your application. As no liveness checks are registered, this will return as status code of 200 OK and a JSON payload of `{"status":"UP","checks":[]}`.
 
-Check that your livenessProbe Health Check endpoint is running:
+Check that your `livenessProbe` Health Check endpoint is running:
 
 1. Start your application:
 
@@ -154,15 +152,11 @@ Check that your livenessProbe Health Check endpoint is running:
    npm start
    ```
 
-2. Visit the `health` endpoint:
-
-   [http://localhost:3000/health](http://localhost:3000/health)
+2. Visit the `health` endpoint [http://localhost:3000/health](http://localhost:3000/health).
 
 For information on how to register health/liveness checks, and additional support for start-up, readiness and shutdown checks, see the [Cloud Health documentation](https://github.com/CloudNativeJS/cloud-health/blob/master/README.md).
 
-
 ### 3. Add Metrics to your Application
-
 
 For any application deployed to a cloud, it is important that the application is "observable": that you have sufficient information about an application and its dependencies such that it is possible to discover, understand and diagnose the state of the application. One important aspect of application observability is metrics-based monitoring data for the application. 
 
@@ -175,7 +169,7 @@ Add a `/metrics` Prometheus endpoint to your Express.js application using the fo
 1. Add the `appmetrics-prometheus` dependency to your project
    
    ```sh
-   npm install appmetrics-prometheus
+   npm install --save appmetrics-prometheus
    ```
 
 2. 	Require `appmetrics-prometheus` and attach it to your Express server:
@@ -193,9 +187,7 @@ Check that your metrics endpoint is running:
    ```sh
    npm start
    ```
-2. Visit the `metrics` endpoint:
-
-   [http://localhost:3000/metrics](http://localhost:3000/metrics)
+2. Visit the `metrics` endpoint [http://localhost:3000/metrics](http://localhost:3000/metrics).
 
 For information on how to configure the appmetrics-prometheus library see the [appmetrics-prometheus documentation](https://github.com/CloudNativeJS/appmetrics-prometheus).
 
@@ -237,7 +229,7 @@ docker run -i -p 3000:3000 -t nodeserver-run:1.0.0
 
 This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application. 
 
-Go ahead and visit your applications endpoints to check that it is running successfully: 
+Visit your applications endpoints to check that it is running successfully: 
 
 * Homepage: [http://localhost:3000/](http://localhost:3000/)
 * Health: [http://localhost:3000/health](http://localhost:3000/health)
@@ -441,13 +433,148 @@ Appsody is designed to help you develop containerized applications for the cloud
 
 If you're a software developer, Appsody's aim is to greatly improve developer experience by removing the burden of managing the full software development stack. With Appsody, you can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology. You can simply focus on the important stuff - developing application code!
 
-If you're responsible for defining standards for application runtime environments such as software levels, Appsody allows you to control the stacks that your developers use. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You get to implement and maintain your standards, ensuring consistency and reliability.
+If you're responsible for defining standards for application runtime environments, Appsody allows you to control the stacks that your developers use. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You get to implement and maintain your standards, ensuring consistency and reliability.
 
-For more background information - checkout out this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
+For more background information - checkout this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
 
-### Tutorial 
+### Prerequisites
 
-This tutorial will teach you how to use build a new Cloud Native Express.js app with Appsody.
+Before getting started, you’ll need to install the Appsody CLI.
+1. Follow the Installing Appsody guide to install the CLI for your platform.
 
+### Tutorial
 
-https://medium.com/appsody/nodejs-express-cloud-native-70022e7d5371
+Creating a new application with the `nodejs-express` Appsody Stack
+
+New Appsody based applications are initialized using appsody init <stack> , where the name of the stack is one of those listed when running appsody list. This both downloads the most recent copy of the Appsody Stack, and populates the project directory with a template that provides a basic project structure.
+
+This needs to be done in a new, empty project directory, and Appsody will then use the name of the directory as the default name for the project.
+
+1. Create a new directory for your project:
+
+```
+mkdir express-app
+cd express-app
+```
+
+2. Initialize a new application using the nodejs-express Stack:
+
+```
+appsody init nodejs-express
+```
+
+This provides output similar to the following:
+
+```
+Running appsody init…
+Downloading nodejs-express template project from https://github.com/appsody/stacks/releases/download/nodejs-express-v0.2.1/incubator.nodejs-express.templates.simple.tar.gz
+Download complete. Extracting files from nodejs-express.tar.gz
+Setting up the development environment
+Running command: docker[pull appsody/nodejs-express:0.2]
+Running command: docker[run — rm — entrypoint /bin/bash appsody/nodejs-express:0.2 -c find /project -type f -name .appsody-init.sh]
+Successfully initialized Appsody project
+```
+
+This has downloaded a project template that provides a very basic project structure, along with the latest nodejs-express Stack which is a container image that contains:
+A continuous, containerized run, debug and test environment for use during development.
+A pre-configured Express.js server with built-in cloud-native capabilities.
+A build configuration to provide optimized production-read container images for your application.
+Your newly created application contains the following files:
+
+```
+ 8 -rw-r — r — .appsody-config.yaml
+ 0 drwxr-xr-x .vscode
+ 0 drwxr-xr-x test
+ 8 -rw-r — r — app.js
+ 8 -rw-r — r — package.json
+```
+
+Where:
+- `.appsody-config.yaml` configures the Appsody project, primarily controlling with version(s) of the Appsody Stack that the project can use.
+- `.vscode` provides very basic integration with VSCode, including adding Run Task… entries for the Appsody CLI commands.
+
+- `test` contains a set of tests for the application based on the mocha and chai frameworks.
+
+- `app.js` provides a very simple “Hello from Appsody” Express.js route as an example.
+
+- `package.json` configured your application, and allows you to add your own additional module dependencies as normal.
+
+Looking at the `app.js` file in detail, it contains the following:
+
+```
+const app = require('express')()
+app.get('/', (req, res) => {
+  res.send(“Hello from Appsody!”);
+});
+ 
+module.exports.app = app;
+```
+
+This creates an instance of an Express.js app, and then registers a handler for get() requests on /that send() a response of "Hello from Appsody!".
+
+The crucial characteristic that is required for the application to work with the nodejs-express Appsody Stack is that the application exports the create Express.js app using the following line:
+
+```
+module.exports.app = app;
+```
+
+Ths is required as the Appsody Stack will apply the exported app onto its own pre-configured Express.js server that has already had support for cloud-native capabilities such as liveness and readiness probes, and metrics and observability built in.
+
+### Developing your application with Appsody
+
+Now that you have created your application, the next step is to see it running. To do that you can use the appsody run command in a terminal window. Alternatively, if you use VS Code, you can use the tasks that have been configured in the .vscode directory that was added as part of the template project.
+
+1. Run your applcation using:
+a) From the terminal: appsody run
+b) In VSCode: Terminal > Run Task… > Appsody: run
+This starts a continuous development environment for your application, running inside a container.
+
+2. Connect to the application in your browser: http://localhost:3000
+This responds with:
+`Hello from Appsody!`
+
+In addition to the handler for get requests on / that was defined in app.js, some other capabilities have been added by the Appsody Stack itself, these include health, liveness and readiness endpoints, a metrics endpoint, and an application performance analysis dashboard (during development only).
+
+3. View the additional cloud-native capabilities that come prepackaged with the `nodejs-express` stack:
+- Health Endpoint: http://localhost:3000/health
+- Liveness Endpoint: http://localhost:3000/live
+- Readiness Endpoint: http://localhost:3000/ready
+- Metrics Endpoint: http://localhost:3000/metrics
+- Performance Dashboard: http://localhost:3000/appmetrics-dash
+
+Now that your application is running under appsody run, as you make and save code changes in your application, those will automatically cause your application to be restarted and the changes reflected in the browser.
+
+Make a code change to your project that will be reflected in the browser:
+
+a) Open the app.js file
+b) Change the file contents to:
+
+```
+const app = require('express')()
+ 
+app.get('/', (req, res) => {
+  res.send(“Hello from Appsody!!!!!!!”);
+});
+
+module.exports.app = app;
+```
+
+c) Save the file.
+5. Connect to the application in your browser: http://localhost:3000
+
+This will display:
+```
+Hello from Appsody!!!!!!!
+```
+
+6. Finally, stop the continuous run environment by either:
+Using Ctrl-C in the terminal window where appsody run is executing
+Running appsody stop from the project directory
+
+### Using the Metrics endpoint on `/metrics`
+
+The Metrics endpoint that is automatically added as part of the nodejs-express Stack is designed to work with the Prometheus open source monitoring system.
+
+While Prometheus can be run anywhere, it is also designed to integrate easily into a Kubernetes environment, and has been embraced by Kubernetes itself — with many of its components exposing metrics for Prometheus to collect.
+
+This means that, once deployed into Kubernetes, you can visualize data both from your application, and from Kubernetes itself.
