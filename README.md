@@ -4,8 +4,7 @@ Welcome :wave: to the Node.js in the Cloud workshop at NodeConfEU!
 
 The first part of this workshop will teach you how to extend a simple Express.js application to leverage cloud capabilities. 
 
-The second part of the workshop will demonstrate tooling to help you develop your cloud-native applications from a consistent base. 
-
+The second part of the workshop will demonstrate tooling to help you develop all of your cloud-native applications from a consistent base. 
 
 ## Part 1: Extending an Express.js application to leverage Cloud Capabilties 
 
@@ -32,7 +31,7 @@ At the end you'll have a fully functioning application running as a cluster in K
 
 Before getting started, make sure you have the following prerequisites installed on your system.
 
-1. [Node.js 8 or later](https://nodejs.org/en/download/)
+1. [Node.js 8 or later](https://nodejs.org/en/download/) or using [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
 2. Your IDE of choice
 3. [Docker for Desktop](https://www.docker.com/products/docker-desktop)
 
@@ -88,7 +87,6 @@ This makes it easy for you to install a number of applications and services into
 
 ### 1. Create your Express.js Application
 
-
 Use the following steps to create your Express.js application:
 
 1. Create a directory to host your project
@@ -113,7 +111,7 @@ This has built a simple Express.js application called `nodeserver`, after the na
     npm start 
     ```
 
-Your application should now be visible at the following URL: [http://localhost:3000](http://localhost:3000)
+Your application should now be visible at [http://localhost:3000](http://localhost:3000)
 
 ### 2. Add Health Checks to your Application
 
@@ -140,7 +138,7 @@ Add a Health Check endpoint to your Express.js application using the following s
    let healthcheck = new health.HealthChecker();
    ```
    
-3. Register a Liveness endpoint in app.js:
+3. Register a Liveness endpoint in `app.js`:
 
    ```js
    app.use('/health', health.LivenessEndpoint(healthcheck))
@@ -207,7 +205,7 @@ You can install a local Prometheus server to graph and visualize the data, and a
 
 Before you can deploy your application to Kubernetes, you first need to build your application into a Docker container and produce a Docker image. This packages your application along with all of its dependencies in a ready to run format.
 
-CloudNativeJS provide a "[Docker](https://github.com/CloudNativeJS/docker)" project that provides a number of best-practice Dockerfile templates that can be used to build your Docker container and produce your image.
+CloudNativeJS provides a "[Docker](https://github.com/CloudNativeJS/docker)" project that provides a number of best-practice Dockerfile templates that can be used to build your Docker container and produce your image.
 
 For this workshop, you'll use the `Dockerfile-run` template, which builds a production-ready Docker image for your application.
 
@@ -244,8 +242,6 @@ Go ahead and visit your applications endpoints to check that it is running succe
 * Homepage: [http://localhost:3000/](http://localhost:3000/)
 * Health: [http://localhost:3000/health](http://localhost:3000/health)
 * Metrics: [http://localhost:3000/metrics](http://localhost:3000/metrics)
-
-For information on Docker usage, how to develop your application directly in a Docker container, and how to debug your application in a Docker container, see the [Docker documentation](https://github.com/CloudNativeJS/docker).
 
 ## 5. Packaging your Application with Helm
 
@@ -287,7 +283,6 @@ Go ahead and modify the `chart/nodeserver/values.yaml` file to use your image, a
 
 The `repository` field gives the name of the Docker image to use. The `pullPolicy` change tells Kuberentes to use a local Docker image if there is one available rather than always pulling the Docker image from a remote repository. Finally, the `replicaCount` states how many instances to deploy.
  
-
 ## 6. Deploying your Application to Kubernetes
 
 Now that you have built a Helm chart for your application, the process for deploying your application has been greatly simplified.
@@ -366,6 +361,7 @@ You can then run the following two commands in order to be able to connect to Gr
 export POD_NAME=$(kubectl get pods --namespace grafana -l "app=grafana" -o jsonpath="{.items[0].metadata.name}")
 kubectl --namespace grafana port-forward $POD_NAME 3000
 ```
+
 You can now connect to Grafana at the following address, using `admin` and `PASSWORD` to login:
 
 * [http://localhost:3000](http://localhost:3000)
@@ -437,14 +433,13 @@ Here are some ideas you could explore to further your learning.
 
 You now have an Express.js application deployed at scaling using Docker and Kubernetes, with automatic restart and full metrics based monitoring enabled!
 
-
 ## Part 2: Building Cloud-Native Apps with Appsody
 
 ### Introduction to Appsody
 
 Appsody is designed to help you develop containerized applications for the cloud.
 
-If you're a software developer, our aim is to greatly improve your developer experience by removing the burden of managing the full software development stack. With Appsody, you can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology. You can simply focus on the important stuff - developing application code!
+If you're a software developer, Appsody's aim is to greatly improve developer experience by removing the burden of managing the full software development stack. With Appsody, you can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology. You can simply focus on the important stuff - developing application code!
 
 If you're responsible for defining standards for application runtime environments such as software levels, Appsody allows you to control the stacks that your developers use. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You get to implement and maintain your standards, ensuring consistency and reliability.
 
