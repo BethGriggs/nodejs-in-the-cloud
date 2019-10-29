@@ -330,12 +330,12 @@ You can now connect to Prometheus at the following address:
 * [http://localhost:9090](http://localhost:9090)
 
 This should show the following screen:
-![prometheus-dashboard](./resources/prometheus-dashboard.png)
+![prometheus-dashboard](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/prometheus-dashboard.png)
 Prometheus will be automatically collecting data from your Express.js application, allowing you to create graphs of your data.
 
 To build your first graph, type `os_cpu_used_ratio` into the **Expression** box and click on the **Graph** tab:
 
-![prometheus-graph](./resources/prometheus-graph.png)
+![prometheus-graph](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/prometheus-graph.png)
 
 
 Whilst Prometheus provides the ability to build simple graphs and alerts, Grafana is commonly used to build more sophisticated dashboards.
@@ -361,7 +361,7 @@ You can now connect to Grafana at the following address, using `admin` and `PASS
 
 This should show the following screen:
 
-![grafana-home](./resources/grafana-home.png)
+![grafana-home](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-home.png)
 
 In order to connect Grafana to the Prometheus service, next click on **Add data source**.
 
@@ -371,7 +371,7 @@ This opens the a panel that should be filled out with the following entries:
 * Type: `Prometheus`
 * URL: `http://prometheus-server.prometheus.svc.cluster.local`
 
-![grafana-datasource](./resources/grafana-datasource.png)
+![grafana-datasource](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-datasource.png)
 
 Now click on **Save & Test** to check the connection and save the Data Source configuration.
 
@@ -383,25 +383,21 @@ The Grafana community provides a large number of pre-created dashboards which ar
 
 To install one of those dashboards, click on the **+** icon and select **Import**
 
-![grafana-import-select](./resources/grafana-import-select.png)
-
 In the provided panel, enter `1621` into the **Grafana.com Dashboard** field in order to import dashboard number 1621, and press **Tab**.
 
 This then loads the information on dashboard `1621` from Grafana.com.
 
 Set the **Prometheus** field to `Prometheus` and click **Import**.
 
-![grafana-dashboard-import](./resources/grafana-dashboard-import.png)
+![grafana-dashboard-import](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-import-select.png)
 
 This will then open the dashboard, which will automatically start populating with data about your Kubernetes cluster.
-
-![grafana-kube-dash](./resources/grafana-kube-dash.png)
 
 ### Adding Custom Graphs
 
 In order to extend the dashboard with your own graphs, click the **Add panel** icon on the top toolbar and select **Graph**.
 
-![grafana-add-graph](./resources/grafana-add-graph.png)
+![grafana-add-graph](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-add-graph.png)
 
 This creates a blank graph. Select the **Panel Title** pull down menu and select **Edit**.
 
@@ -420,7 +416,6 @@ Here are some ideas you could explore to further your learning.
 
 * Add a Singlestat that shows how many instances of you Express.js application are currently running
 * Add a Singlestat that shows how many requests your Express.js app has responded to
-
 
 ### Congratulations! 🎉
 
@@ -628,7 +623,7 @@ module.exports.app = app;
 
 Save the file.
 
-6. Connect to the application in your browser: http://localhost:3000
+6. Connect to the application in your browser at http://localhost:3000.
 
 This will display:
 
