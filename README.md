@@ -544,12 +544,15 @@ A build configuration to provide optimized production-read container images for 
 Your newly created application contains the following files:
 
 ```sh
- 8 -rw-r — r — .appsody-config.yaml
- 0 drwxr-xr-x .vscode
- 0 drwxr-xr-x test
- 8 -rw-r — r — app.js
- 8 -rw-r — r — package.json
+.appsody-config.yaml
+.gitignore
+.vscode
+app.js
+package-lock.json
+package.json
+test
 ```
+
 
 Where:
 - `.appsody-config.yaml` configures the Appsody project, primarily controlling with version(s) of the Appsody Stack that the project can use.
