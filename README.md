@@ -2,7 +2,7 @@
 
 Welcome :wave: to the Node.js in the Cloud workshop at NodeConfEU! 
 
-The first part of this workshop will teach you how to extend a simple Express.js application to leverage cloud capabilities. 
+The first part of this workshop will teach you how to extend a simple Express.js application to leverage cloud capabilities.
 
 The second part of the workshop will demonstrate tooling to help you develop all of your cloud-native applications from a consistent base. 
 
@@ -427,11 +427,11 @@ You now have an Express.js application deployed with scaling using Docker and Ku
 
 Appsody is designed to help you develop containerized applications for the cloud.
 
-If you're a software developer, Appsody's aim is to greatly improve developer experience by removing the burden of managing the full software development stack. With Appsody, you can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology. You can simply focus on the important stuff - developing application code!
+Imagine you've defined your chosen cloud technologies, and you want to reuse these technologies across all of your Node.js microservices. You can use Appsody to define the standards for your applications, which will allow you to control the base that all of your applications are built off. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You can implement and maintain your standards, ensuring consistency and reliability.
 
-If you're responsible for defining standards for application runtime environments, Appsody allows you to control the stacks that your developers use. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You get to implement and maintain your standards, ensuring consistency and reliability.
+This also means that not all software developers in your organisation need to have the knowledge or burden of managing the full cloud-native software development stack. With Appsody, developers can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology.
 
-For more background information - checkout this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
+For more background information on Appsody - checkout this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
 
 ### Prerequisites
 
@@ -449,9 +449,9 @@ You should see output similar to the following:
 
 The Appsody command-line tool (CLI) enables the rapid development of cloud native applications.
 
-Complete documentation is available at https://appsody.dev
+Complete documentation is available at [https://appsody.dev](https://appsody.dev).
 
-```bash
+```
 Usage:
   appsody [command]
 
@@ -480,13 +480,11 @@ Flags:
 Use "appsody [command] --help" for more information about a command.
 ```
 
-Let’s take a look at what stacks we have available by entering:
+Let’s take a look at which pre-built stacks we have available by entering:
 
 ```sh
 appsody list
 ```
-
-This command lists the available stacks and you should see something like:
 
 ```
 REPO                    ID                          VERSION     TEMPLATES   DESCRIPTION
@@ -499,7 +497,20 @@ appsodyhub              swift                       0.1.4       *simple     Runt
 You’ll see that with the stacks available, we can develop new cloud-native applications using Java, Node.js or Swift, with a number of different, popular frameworks.
 ```
 
-You can also register new repositories containing stacks created from the ground up or as forks of the default stacks shipped with Appsody
+You can also register new Appsody repositories containing stacks created from the ground up or as forks of the default stacks shipped with Appsody. 
+
+To see the available Appsody repositories run the following command: 
+
+```
+appsody repo list
+```
+
+```
+NAME        	URL                                                                               
+*appsodyhub 	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml  
+```
+
+Appsodyhub will be there by default. Appsodyhub is the location where the appsody project releases its stacks.
 
 ### Node.js Express with Appsody Tutorial
 
