@@ -648,3 +648,5 @@ Hello from Appsody!!!!!!!
 7. Finally, stop the continuous run environment by either:
 Using Ctrl-C in the terminal window where appsody run is executing
 Running appsody stop from the project directory
+
+## Appsody deploy
