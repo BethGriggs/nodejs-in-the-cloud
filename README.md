@@ -97,10 +97,11 @@ Use the following steps to create your Express.js application:
 2. Globally install and run the Express generator to build your skeleton application:
 
    ```sh
-   npm install --global express-generator 
-   express
+   npx express-generator --views=ejs
    ```
    
+   Note: `express-generator` still uses `var`'s. 
+
 This has built a simple Express.js application called `nodeserver`, after the name of the directory you are in.
 
 3. Install your applications dependencies and start your application:
@@ -120,7 +121,7 @@ The simplest form of Health Check is process level health checking, where Kubern
 
 The next level of Health Check is HTTP based, where the application exposes a "livenessProbe" URL endpoint that Kubernetes can make requests of in order to determine whether the application is running and responsive. Additionally, the request can be used to drive self-checking capabilities in the application.
 
-The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint and provides a Promise based API for adding self-checking capabilities.
+The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint and provides a Promise based API for adding self-checking capabilities. The module is written in TypeScript, but here we will be using `var` for consistency with the `express-generator`. 
 
 Add a Health Check endpoint to your Express.js application using the following steps:
 
@@ -130,7 +131,7 @@ Add a Health Check endpoint to your Express.js application using the following s
    npm install --save @cloudnative/health-connect
    ```
 
-2. 	Set up a HealthChecker in `app.js`:
+2. Set up a HealthChecker in `app.js`:
 
    ```js
    var health = require('@cloudnative/health-connect');
@@ -143,7 +144,7 @@ Add a Health Check endpoint to your Express.js application using the following s
    app.use('/health', health.LivenessEndpoint(healthcheck))
    ```
    
-This has added a '/health' endpoint to your application. As no liveness checks are registered, this will return as status code of 200 OK and a JSON payload of `{"status":"UP","checks":[]}`.
+This has added a `/health` endpoint to your application. As no liveness checks are registered, this will return as status code of 200 OK and a JSON payload of `{"status":"UP","checks":[]}`.
 
 Check that your `livenessProbe` Health Check endpoint is running:
 
@@ -216,18 +217,26 @@ Build a production Docker image for your Express.js application using the follow
    ```sh
    wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/.dockerignore
    ```
-   
-3. Build the Docker run image for your application:
+
+3. (Optional) Update your `package.json` version to v1.0.0. This is not required, but it's a convient way to associate your Docker with your application version.
+
+  ```sh
+  npm version major
+  ```
+
+4. Build the Docker run image for your application:
 
    ```sh
-   docker build -t nodeserver-run:1.0.0 -f Dockerfile-run .
+   docker build --tag nodeserver-run:1.0.0 --file Dockerfile-run .
+   # OR docker build -t nodeserver-run:1.0.0 -f Dockerfile-run .
    ```
    
 You have now built a Docker image for your application called `nodeserver-run` with a version of `1.0.0`. Use the following to run your application inside the Docker container:
 
-```sh
-docker run -i -p 3000:3000 -t nodeserver-run:1.0.0
-```
+  ```sh
+  docker run --interactive --publish 3000:3000 --tty nodeserver-run:1.0.0
+  # OR docker run -i -p 3000:3000 -t nodeserver-run:1.0.0
+  ```
 
 This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application.
 
@@ -272,7 +281,7 @@ Go ahead and modify the `chart/nodeserver/values.yaml` file to use your image, a
 
 1. Open the `chart/nodeserver/values.yaml` file
 2. Change the `repository` field to `nodeserver-run`
-3. Change the `pullPolicy` to `IfNotPresent`
+3. Ensure that the `pullPolicy` is set to `IfNotPresent`
 4. Change the `replicaCount` value to `3`
 
 The `repository` field gives the name of the Docker image to use. The `pullPolicy` change tells Kuberentes to use a local Docker image if there is one available rather than always pulling the Docker image from a remote repository. Finally, the `replicaCount` states how many instances to deploy.
@@ -601,11 +610,11 @@ Ths is required as the Appsody Stack will apply the exported app onto its own pr
 Now that you have created your application, the next step is to see it running. To do that you can use the appsody run command in a terminal window. Alternatively, if you use VS Code, you can use the tasks that have been configured in the .vscode directory that was added as part of the template project.
 
 1. Run your applcation using:
-    1. From the terminal: appsody run
+    1. From the terminal: `appsody run`
     2. In VSCode: Terminal > Run Task… > Appsody: run
 This starts a continuous development environment for your application, running inside a container.
 
-2. Connect to the application in your browser: http://localhost:3000
+2. Connect to the application in your browser at http://localhost:3000
 This responds with:
 `Hello from Appsody!`
 
