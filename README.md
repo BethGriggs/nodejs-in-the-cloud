@@ -1,10 +1,10 @@
 # Node.js in the Cloud
 
-Welcome :wave: to the Node.js in the Cloud workshop at NodeConfEU! 
+Welcome :wave: to the Node.js in the Cloud workshop at NodeConfEU!
 
 The first part of this workshop will teach you how to extend a simple Express.js application to leverage cloud capabilities.
 
-The second part of the workshop will demonstrate tooling to help you develop all of your cloud-native applications from a consistent base. 
+The second part of the workshop will demonstrate tooling to help you develop all of your cloud-native applications from a consistent base.
 
 ## Part 1: Extending an Express.js application to leverage Cloud Capabilties 
 
@@ -34,6 +34,7 @@ Before getting started, make sure you have the following prerequisites installed
 1. [Node.js 8 or later](https://nodejs.org/en/download/) or using [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
 2. Your IDE of choice
 3. [Docker for Desktop](https://www.docker.com/products/docker-desktop)
+    - If you're on Linux you should use Minikube. Follow the instructions at https://kubernetes.io/docs/tasks/tools/install-minikube/. 
 
 ### Setting up
 
@@ -56,7 +57,7 @@ Helm is a package manager for Kubernetes. By installing a Helm "chart" into your
 **Using a Package Manager:**
 
 * macOS with Homebrew: `brew install kubernetes-helm`
-* Linux with Snap: `sudo snap install helm`
+* Linux with Snap: `sudo snap install helm --classic`
 * Windows with Chocolatey: `choco install kubernetes-helm`
 
 **Using a Script:**
@@ -106,7 +107,7 @@ This has built a simple Express.js application called `nodeserver`, after the na
 
     ```sh
     npm install
-    npm start 
+    npm start
     ```
 
 Your application should now be visible at [http://localhost:3000](http://localhost:3000).
@@ -115,7 +116,7 @@ Your application should now be visible at [http://localhost:3000](http://localho
 
 Kubernetes, and a number of other cloud deployment technologies, provide "Health Checking" as a system that allows the cloud deployment technology to monitor the deployed application and to take action should the application fail or report itself as "unhealthy".
 
-The simplest form of Health Check is process level health checking, where Kubernetes checks to see if the application process still exists and restarts the container (and therefore the application process) if it is not. This provides a basic restart capability but does not handle scenarios where the application exists but is un-responsive, or where it would be desirable to restart the application for other reasons (such as low memory availability due to a memory leak).
+The simplest form of Health Check is process level health checking, where Kubernetes checks to see if the application process still exists and restarts the container (and therefore the application process) if it is not. This provides a basic restart capability but does not handle scenarios where the application exists but is un-responsive, or where it would be desirable to restart the application for other reasons.
 
 The next level of Health Check is HTTP based, where the application exposes a "livenessProbe" URL endpoint that Kubernetes can make requests of in order to determine whether the application is running and responsive. Additionally, the request can be used to drive self-checking capabilities in the application.
 
@@ -132,8 +133,8 @@ Add a Health Check endpoint to your Express.js application using the following s
 2. 	Set up a HealthChecker in `app.js`:
 
    ```js
-   const health = require('@cloudnative/health-connect');
-   let healthcheck = new health.HealthChecker();
+   var health = require('@cloudnative/health-connect');
+   var healthcheck = new health.HealthChecker();
    ```
    
 3. Register a Liveness endpoint in `app.js`:
@@ -158,9 +159,9 @@ For information on how to register health/liveness checks, and additional suppor
 
 ### 3. Add Metrics to your Application
 
-For any application deployed to a cloud, it is important that the application is "observable": that you have sufficient information about an application and its dependencies such that it is possible to discover, understand and diagnose the state of the application. One important aspect of application observability is metrics-based monitoring data for the application. 
+For any application deployed to a cloud, it is important that the application is "observable": that you have sufficient information about an application and its dependencies such that it is possible to discover, understand and diagnose the state of the application. One important aspect of application observability is metrics-based monitoring data for the application.
 
-The CNCF recommended metrics system is [Prometheus](http://prometheus.io), which works by collecting metrics data by making requests of a URL endpoint provided by the application. Prometheus is widely supported inside Kubernetes, meaning that Prometheus also collects data from Kubernetes itself, and application data provided to Prometheus can also be used to automatically scale your application. 
+The CNCF recommended metrics system is [Prometheus](http://prometheus.io), which works by collecting metrics data by making requests of a URL endpoint provided by the application. Prometheus is widely supported inside Kubernetes, meaning that Prometheus also collects data from Kubernetes itself, and application data provided to Prometheus can also be used to automatically scale your application.
 
 The `appmetrics-prometheus` package provides an easy to use library that auto-instruments your application to collect metrics and exposes them on a `/metrics` endpoint for consumption by Prometheus.
 
@@ -210,13 +211,13 @@ Build a production Docker image for your Express.js application using the follow
    wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/Dockerfile-run
    ```
    
-1. Copy the `.dockerignore` file into the root of your project:
+2. Copy the `.dockerignore` file into the root of your project:
 
    ```sh
    wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/.dockerignore
    ```
    
-2. Build the Docker run image for your application:
+3. Build the Docker run image for your application:
 
    ```sh
    docker build -t nodeserver-run:1.0.0 -f Dockerfile-run .
@@ -228,9 +229,9 @@ You have now built a Docker image for your application called `nodeserver-run` w
 docker run -i -p 3000:3000 -t nodeserver-run:1.0.0
 ```
 
-This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application. 
+This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application.
 
-Visit your applications endpoints to check that it is running successfully: 
+Visit your applications endpoints to check that it is running successfully:
 
 * Homepage: [http://localhost:3000/](http://localhost:3000/)
 * Health: [http://localhost:3000/health](http://localhost:3000/health)
@@ -255,7 +256,7 @@ Add a Helm chart for your Express.js application using the following steps:
 2. Unzip the downloaded template chart
 
    ```sh
-   unzip master.zip 
+   unzip master.zip
    ```
 
 3. Move the chart to your projects root directory
@@ -265,7 +266,7 @@ Add a Helm chart for your Express.js application using the following steps:
    rm -rf helm-master master.zip
 	```
 	
-The provided Helm chart provides a number of configuration files, with the configurable values extracted into `chart/nodeserver/values.yaml`. In this file you provide the name of the Docker image to use, the number of replacates (instances) to deploy, etc.
+The provided Helm chart provides a number of configuration files, with the configurable values extracted into `chart/nodeserver/values.yaml`. In this file you provide the name of the Docker image to use, the number of replicas (instances) to deploy, etc.
 
 Go ahead and modify the `chart/nodeserver/values.yaml` file to use your image, and to deploy 3 replicas:
 
@@ -293,7 +294,7 @@ Deploy your Express.js application into Kubernetes using the following steps:
    ```sh
    kubectl get pods
    ```
-   
+
 Now everything is up and running in Kubernetes. It is not possible to navigate to localhost:3000 as usual because your cluster isn't part of the localhost network, and because there are several instances to choose from.
 
 You can forward one of the instances ports to your laptop using the following steps:
@@ -409,7 +410,6 @@ You can create more complex queries and apply filters according to any kubernete
 
 * `http_request_duration_microseconds{kubernetes_name="nodeserver-service"}`
 
-
 You now have integrated monitoring for both your Kubernetes cluster and your deployed Express.js application.
 
 Here are some ideas you could explore to further your learning.
@@ -516,7 +516,7 @@ Appsodyhub will be there by default. Appsodyhub is the location where the appsod
 
 Creating a new application with the `nodejs-express` Appsody Stack
 
-New Appsody based applications are initialized using appsody init <stack> , where the name of the stack is one of those listed when running appsody list. This both downloads the most recent copy of the Appsody Stack, and populates the project directory with a template that provides a basic project structure.
+New Appsody based applications are initialized using appsody init <stack>, where the name of the stack is one of those listed when running appsody list. This both downloads the most recent copy of the Appsody Stack, and populates the project directory with a template that provides a basic project structure.
 
 This needs to be done in a new, empty project directory, and Appsody will then use the name of the directory as the default name for the project.
 
