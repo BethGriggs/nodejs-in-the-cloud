@@ -838,3 +838,4 @@ You have seen how Appsody stacks and templates make it easy to get started with 
 ## Further reading 
 
 - [Building Cloud-Native Apps with Appsody](https://medium.com/appsody/overview-c0cf1f2a244c)
+- [Cloud Functions for Node.js using Express.js (Connect) APIs](https://medium.com/appsody/nodes-functions-839a70289b82)
