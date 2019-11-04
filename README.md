@@ -21,11 +21,7 @@ In this self-paced tutorial, you will:
 * Deploy your application to Kubernetes
 * Monitor your application using Prometheus
 
-The application you'll use is a simple Express.js app built using the Express Generator.
-
-You'll learn about Health Checks, Metrics, Docker, Kubernetes, Prometheus and Grafana.
-
-At the end you'll have a fully functioning application running as a cluster in Kubernetes, with production monitoring.
+The application you'll use is a simple Express.js app built using the Express Generator. You'll learn about Health Checks, Metrics, Docker, Kubernetes, Prometheus and Grafana. At the end you'll have a fully functioning application running as a cluster in Kubernetes, with production monitoring.
 
 ### Prerequisites
 
@@ -40,7 +36,7 @@ Before getting started, make sure you have the following prerequisites installed
 
 #### Enabling Kubernetes in Docker for Desktop
 
-Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes within the app. To do so:
+Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes within the application. To do so:
 
 1. Select the Docker icon in the Menu Bar
 2. Click Preferences > Kubernetes Tab > Enable Kubernetes.
@@ -49,6 +45,8 @@ It will take a few moments to install and start up. If you already use Kubernete
 
 1. Select the Docker icon in the Menu Bar
 2. Click Kubernetes and select the `docker-for-desktop` context
+
+
 
 #### Installing Helm
 
@@ -97,10 +95,11 @@ Use the following steps to create your Express.js application:
 2. Globally install and run the Express generator to build your skeleton application:
 
    ```sh
-   npx express-generator --views=ejs
+   npx express-generator --view=ejs
+   npm version 1.0.0
    ```
    
-   Note: `express-generator` still uses `var`'s. 
+   Note: `express-generator` still uses `var`.
 
 This has built a simple Express.js application called `nodeserver`, after the name of the directory you are in.
 
@@ -121,11 +120,11 @@ The simplest form of Health Check is process level health checking, where Kubern
 
 The next level of Health Check is HTTP based, where the application exposes a "livenessProbe" URL endpoint that Kubernetes can make requests of in order to determine whether the application is running and responsive. Additionally, the request can be used to drive self-checking capabilities in the application.
 
-The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint and provides a Promise based API for adding self-checking capabilities. The module is written in TypeScript, but here we will be using `var` for consistency with the `express-generator`. 
+The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint and provides a Promise based API for adding self-checking capabilities. The module is written in TypeScript. In this workshop but here we will be using `var` for consistency with the `express-generator`.
 
 Add a Health Check endpoint to your Express.js application using the following steps:
 
-1. Add the `@cloudnative/health-connect` dependency to your project
+1. Add the `@cloudnative/health-connect` dependency to your project:
    
    ```sh
    npm install --save @cloudnative/health-connect
@@ -141,7 +140,7 @@ Add a Health Check endpoint to your Express.js application using the following s
 3. Register a Liveness endpoint in `app.js`:
 
    ```js
-   app.use('/health', health.LivenessEndpoint(healthcheck))
+   app.use('/health', health.LivenessEndpoint(healthcheck));
    ```
    
 This has added a `/health` endpoint to your application. As no liveness checks are registered, this will return as status code of 200 OK and a JSON payload of `{"status":"UP","checks":[]}`.
@@ -180,7 +179,7 @@ Add a `/metrics` Prometheus endpoint to your Express.js application using the fo
    var prometheus = require('appmetrics-prometheus').attach();
    ```
    
-This has added a '/metrics' endpoint to your application. This automatically starts collecting CPU, Memory and HTTP responsiveness data from your application and exposes it in a format that Prometheus understands.
+This has added a `/metrics` endpoint to your application. This automatically starts collecting CPU, Memory and HTTP responsiveness data from your application and exposes it in a format that Prometheus understands.
 
 Check that your metrics endpoint is running:
 
@@ -218,13 +217,7 @@ Build a production Docker image for your Express.js application using the follow
    wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/.dockerignore
    ```
 
-3. (Optional) Update your `package.json` version to v1.0.0. This is not required, but it's a convient way to associate your Docker with your application version.
-
-  ```sh
-  npm version major
-  ```
-
-4. Build the Docker run image for your application:
+3. Build the Docker run image for your application:
 
    ```sh
    docker build --tag nodeserver-run:1.0.0 --file Dockerfile-run .
@@ -304,11 +297,11 @@ Deploy your Express.js application into Kubernetes using the following steps:
    kubectl get pods
    ```
 
-Now everything is up and running in Kubernetes. It is not possible to navigate to localhost:3000 as usual because your cluster isn't part of the localhost network, and because there are several instances to choose from.
+Now everything is up and running in Kubernetes. It is not possible to navigate to `localhost:3000` as usual because your cluster isn't part of the localhost network, and because there are several instances to choose from.
 
 You can forward one of the instances ports to your laptop using the following steps:
 
-1. Choose one of the running "pod" instances:
+1. Find the name of one the running "pod" instances:
    ```sh
    kubectl get pods #Copy the nodeserver NAME
    ```
@@ -325,19 +318,18 @@ You can now access that pod's endpoints from your browser.
 
 Installing Prometheus into Kubernetes can be done using its provided Helm chart:
 
-```sh
-helm install stable/prometheus --name prometheus --namespace prometheus
-```
+  ```sh
+    helm install stable/prometheus --name prometheus --namespace prometheus
+  ```
 
 You can then run the following two commands in order to be able to connect to Prometheus from your browser:
 
-```sh
-export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
-kubectl --namespace prometheus port-forward $POD_NAME 9090
-```
-You can now connect to Prometheus at the following address:
+  ```sh
+  export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace prometheus port-forward $POD_NAME 9090
+  ```
 
-* [http://localhost:9090](http://localhost:9090)
+You can now connect to Prometheus at [http://localhost:9090](http://localhost:9090).
 
 This should show the following screen:
 ![prometheus-dashboard](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/prometheus-dashboard.png)
@@ -456,11 +448,11 @@ Verify that Appsody is installed by typing `appsody version`.
 
 You should see output similar to the following:
 
+```
 The Appsody command-line tool (CLI) enables the rapid development of cloud native applications.
 
 Complete documentation is available at [https://appsody.dev](https://appsody.dev).
 
-```
 Usage:
   appsody [command]
 
@@ -496,15 +488,26 @@ appsody list
 ```
 
 ```
-REPO                    ID                          VERSION     TEMPLATES   DESCRIPTION
-appsodyhub              java-microprofile           0.2.11      *default    Eclipse MicroProfile using OpenJ9 and Maven
-appsodyhub              java-spring-boot2           0.3.8       *default    Spring Boot using OpenJ9 and Maven
-appsodyhub              nodejs                      0.2.5       *simple     Runtime for Node.js applications
-appsodyhub              nodejs-express              0.2.5       *simple     Express web framework for Node.js
-appsodyhub              nodejs-loopback             0.1.3       *scaffold   LoopBack API framework for Node.js
-appsodyhub              swift                       0.1.4       *simple     Runtime for Swift applications
-You’ll see that with the stacks available, we can develop new cloud-native applications using Java, Node.js or Swift, with a number of different, popular frameworks.
+REPO        	ID                       	VERSION  	TEMPLATES        	DESCRIPTION                                              
+experimental	java-spring-boot2-liberty	0.1.10   	*default         	Spring Boot on Open Liberty & OpenJ9 using Maven         
+experimental	nodejs-functions         	0.1.5    	*simple          	Serverless runtime for Node.js functions                 
+experimental	quarkus                  	0.1.5    	*default         	Quarkus runtime for running Java applications            
+experimental	rocket                   	0.1.0    	*simple          	Rocket web framework for Rust                            
+experimental	rust                     	0.1.3    	*simple          	Runtime for Rust applications                            
+experimental	vertx                    	0.1.4    	*default         	Eclipse Vert.x runtime for running Java applications     
+*incubator  	java-microprofile        	0.2.18   	*default         	Eclipse MicroProfile on Open Liberty & OpenJ9 using Maven
+*incubator  	java-spring-boot2        	0.3.15   	*default, kotlin 	Spring Boot using OpenJ9 and Maven                       
+*incubator  	kitura                   	0.2.1    	*default         	Runtime for Kitura applications                          
+*incubator  	nodejs                   	0.2.5    	*simple          	Runtime for Node.js applications                         
+*incubator  	nodejs-express           	0.2.8    	scaffold, *simple	Express web framework for Node.js                        
+*incubator  	nodejs-loopback          	0.1.5    	*scaffold        	LoopBack 4 API Framework for Node.js                     
+*incubator  	python-flask             	0.1.5    	*simple          	Flask web Framework for Python                           
+*incubator  	starter                  	0.1.1    	*simple          	Runnable starter stack, copy to create a new stack       
+*incubator  	swift                    	0.2.0    	*simple          	Runtime for Swift applications   
 ```
+
+You’ll see that with the stacks available, we can develop new cloud-native applications using many lanugauges with a number of different, popular frameworks.
+
 
 You can also register new Appsody repositories containing stacks created from the ground up or as forks of the default stacks shipped with Appsody. 
 
@@ -516,16 +519,17 @@ appsody repo list
 
 ```
 NAME        	URL                                                                               
-*appsodyhub 	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml  
+*incubator  	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml
+experimental	https://github.com/appsody/stacks/releases/latest/download/experimental-index.yaml
 ```
 
 Appsodyhub will be there by default. Appsodyhub is the location where the appsody project releases its stacks.
 
 ### Node.js Express with Appsody Tutorial
 
-Creating a new application with the `nodejs-express` Appsody Stack
+Creating a new application with the `nodejs-express` Appsody Stack.
 
-New Appsody based applications are initialized using appsody init <stack>, where the name of the stack is one of those listed when running appsody list. This both downloads the most recent copy of the Appsody Stack, and populates the project directory with a template that provides a basic project structure.
+New Appsody based applications are initialized using `appsody init <stack>`, where the name of the stack is one of those listed when running appsody list. This both downloads the most recent copy of the Appsody Stack, and populates the project directory with a template that provides a basic project structure.
 
 This needs to be done in a new, empty project directory, and Appsody will then use the name of the directory as the default name for the project.
 
@@ -573,16 +577,13 @@ package.json
 test
 ```
 
-
 Where:
 - `.appsody-config.yaml` configures the Appsody project, primarily controlling with version(s) of the Appsody Stack that the project can use.
 - `.vscode` provides very basic integration with VSCode, including adding Run Task… entries for the Appsody CLI commands.
-
 - `test` contains a set of tests for the application based on the mocha and chai frameworks.
-
 - `app.js` provides a very simple “Hello from Appsody” Express.js route as an example.
 
-- `package.json` configured your application, and allows you to add your own additional module dependencies as normal.
+- `package*.json` configured your application, and allows you to add your own additional module dependencies as normal.
 
 Looking at the `app.js` file in detail, it contains the following:
 
@@ -612,22 +613,21 @@ Now that you have created your application, the next step is to see it running. 
 1. Run your applcation using:
     1. From the terminal: `appsody run`
     2. In VSCode: Terminal > Run Task… > Appsody: run
-This starts a continuous development environment for your application, running inside a container.
 
-2. Connect to the application in your browser at http://localhost:3000
-This responds with:
-`Hello from Appsody!`
+    This starts a continuous development environment for your application, running inside a container.
 
-In addition to the handler for get requests on / that was defined in app.js, some other capabilities have been added by the Appsody Stack itself, these include health, liveness and readiness endpoints, a metrics endpoint, and an application performance analysis dashboard (during development only).
+2. Connect to the application in your browser at [http://localhost:3000](http://localhost:3000). This responds with `Hello from Appsody!`.
+
+In addition to the handler for get requests on `/` that was defined in `app.js`, some other capabilities have been added by the Appsody Stack itself, these include health, liveness and readiness endpoints, a metrics endpoint, and an application performance analysis dashboard (during development only).
 
 3. View the additional cloud-native capabilities that come prepackaged with the `nodejs-express` stack:
-- Health Endpoint: http://localhost:3000/health
-- Liveness Endpoint: http://localhost:3000/live
-- Readiness Endpoint: http://localhost:3000/ready
-- Metrics Endpoint: http://localhost:3000/metrics
-- Performance Dashboard: http://localhost:3000/appmetrics-dash
+    - Health Endpoint: http://localhost:3000/health
+    - Liveness Endpoint: http://localhost:3000/live
+    - Readiness Endpoint: http://localhost:3000/ready
+    - Metrics Endpoint: http://localhost:3000/metrics
+    - Performance Dashboard: http://localhost:3000/appmetrics-dash
 
-Now that your application is running under appsody run, as you make and save code changes in your application, those will automatically cause your application to be restarted and the changes reflected in the browser.
+Now that your application is running under `appsody run`, as you make and save code changes in your application, those will automatically cause your application to be restarted and the changes reflected in the browser.
 
 Make a code change to your project that will be reflected in the browser:
 
@@ -638,7 +638,7 @@ Make a code change to your project that will be reflected in the browser:
 const app = require('express')()
  
 app.get('/', (req, res) => {
-  res.send(“Hello from Appsody!!!!!!!”);
+  res.send(“Hello from NodeConfEU!”);
 });
 
 module.exports.app = app;
@@ -648,14 +648,10 @@ Save the file.
 
 6. Connect to the application in your browser at http://localhost:3000.
 
-This will display:
-
-```
-Hello from Appsody!!!!!!!
-```
+This will display: `Hello from NodeConfEU!`
 
 7. Finally, stop the continuous run environment by either:
-Using Ctrl-C in the terminal window where appsody run is executing
+Using `Ctrl-C` in the terminal window where appsody run is executing
 Running appsody stop from the project directory
 
 ## Deploying to Kubernetes
@@ -665,6 +661,7 @@ You’ve finished writing your code and want to deploy to Kubernetes.
 ```
 appsody deploy
 ```
+
 At the end of the deploy, you should see an output like this:
 
 ```
@@ -736,8 +733,6 @@ http://localhost:30062/ready
 
 You should see something like:
 
-// http://localhost:30062/ready
-
 ```json
 {
     "status":"UP",
@@ -752,7 +747,6 @@ Finally, let’s undeploy the application by entering:
 ```
 appsody deploy delete
 ```
-
 
 You should see something like this in the command-line output:
 
@@ -800,22 +794,23 @@ You should see output similar to:
 
 ```
 Extracting project from development environment
-Pulling docker image dev.local/nodejs-express:SNAPSHOT
-Running command: docker pull dev.local/nodejs-express:SNAPSHOT
-Error response from daemon: Get https://dev.local/v2/: Service Unavailable
-[Warning] Docker image pull failed: exit status 1
-Using local cache for image dev.local/nodejs-express:SNAPSHOT
+Pulling docker image appsody/nodejs-express:0.2
+Running command: docker pull appsody/nodejs-express:0.2
+0.2: Pulling from appsody/nodejs-express
+Digest: sha256:d76e8c10487b42df998335940125501684e710876071eeb1dad84709d8b0b3c0
+Status: Image is up to date for appsody/nodejs-express:0.2
+docker.io/appsody/nodejs-express:0.2
 [Warning] The stack image does not contain APPSODY_PROJECT_DIR. Using /project
-Running command: docker create --name nodejs-extract -v /Users/bgriggs/workspace/kabanero-workshop/nodejs/:/project/user-app dev.local/nodejs-express:SNAPSHOT
-Running command: docker cp nodejs-extract:/project /Users/bgriggs/.appsody/extract/nodejs
-Running command: docker rm nodejs-extract -f
-Project extracted to /Users/bgriggs/workspace/kabanero-workshop/nodejs/tmp-extract
+Running command: docker create --name test-appsody-extract -v /Users/bethgriggs/test-appsody/:/project/user-app appsody/nodejs-express:0.2
+Running command: docker cp test-appsody-extract:/project /Users/bethgriggs/.appsody/extract/test-appsody
+Running command: docker rm test-appsody-extract -f
+Project extracted to /Users/bethgriggs/test-appsody/tmp-extract
 ```
 
 Let’s take a look at the extracted project:
 
 ```
-cd ~/workspace/kabanero-workshop/nodejs/tmp-extract
+cd tmp-extract
 ls -al
 ```
 
@@ -842,5 +837,4 @@ You have seen how Appsody stacks and templates make it easy to get started with 
 
 ## Further reading 
 
-- [Building Cloud-Native Apps with Appsody](ttps://medium.com/appsody/overview-c0cf1f2a244c)
-- 
+- [Building Cloud-Native Apps with Appsody](https://medium.com/appsody/overview-c0cf1f2a244c)
