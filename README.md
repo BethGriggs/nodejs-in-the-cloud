@@ -29,13 +29,11 @@ Before getting started, make sure you have the following prerequisites installed
 
 1. [Node.js 8 or later](https://nodejs.org/en/download/) or using [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
 2. Your IDE of choice
-3. ***On Mac or Windows***: [Docker for Desktop](https://www.docker.com/products/docker-desktop)
-
-
-***On Linux***: Docker for Desktop is not available, alternatives are:
-- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
-- [microk8s](https://microk8s.io/#quick-start)
-
+3. Docker and Kubernetes
+    - ***On Mac or Windows***: [Docker for Desktop](https://www.docker.com/products/docker-desktop)
+    - ***On Linux***: Docker for Desktop is not available, alternatives are:
+      - [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
+      - [microk8s](https://microk8s.io/#quick-start)
 
 ### Setting up
 
@@ -44,19 +42,23 @@ that the Prometheus Helm chart is
 [not compatible](https://github.com/helm/charts/pull/17268) with
 Kubernetes 1.16, so make sure to install 1.14, see below.
 
-#### Starting Kubernetes in Docker for Desktop
+#### Starting Kubernetes
+
+#### Docker for Desktop 
 
 Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes within the application. To do so:
 
 1. Select the Docker icon in the Menu Bar
-2. Click Preferences > Kubernetes Tab > Enable Kubernetes.
+2. Click Preferences/Settings > Kubernetes Tab > Enable Kubernetes.
 
 It will take a few moments to install and start up. If you already use Kubernetes, ensure that you are configured to use the `docker-for-desktop` cluster. To do so:
 
 1. Select the Docker icon in the Menu Bar
 2. Click Kubernetes and select the `docker-for-desktop` context
 
-#### Starting Kubernetes in `microk8s`
+#### `microk8s`
+
+<details>
 
 ```sh
 snap install --channel 1.14/stable microk8s --classic
@@ -67,15 +69,19 @@ microk8s.config >~/.kube/config
 microk8s.enable dns registry
 ```
 
-You may be prompted to add your userid to the 'microk8s' group to avoid having
-to use `sudo` for all the commands.
+You may be prompted to add your userid to the 'microk8s' group to avoid having to use `sudo` for all the commands.
 
-#### Starting kubernetes in `minikube`
+</details>
+
+#### `minikube`
+
+<details>
 
 ```sh
 minikube start --kubernetes-version=1.14.7
 eval $(minikube docker-env)
 ```
+</details>
 
 #### Installing Helm
 
@@ -121,6 +127,7 @@ Use the following steps to create your Express.js application:
    mkdir nodeserver
    cd nodeserver
    ```
+
 2. Globally install and run the Express generator to build your skeleton application:
 
    ```sh
@@ -260,11 +267,15 @@ You have now built a Docker image for your application called `nodeserver-run` w
 
 This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application.
 
-***minikube***: Docker runs in the minikube VM, so an additional step is
+<details>
+<summary>minikube only</summary>
+
+Docker runs in the minikube VM, so an additional step is
 required to expose the application to localhost:
 ```sh
 kubectl port-forward service/nodeserver-service 3000
 ```
+</details>
 
 Visit your applications endpoints to check that it is running successfully:
 
@@ -318,13 +329,19 @@ Now that you have built a Helm chart for your application, the process for deplo
 
 Deploy your Express.js application into Kubernetes using the following steps:
 
-0. ***microk8s only***: Push the image into the kubernetes container registry:
+<details>
+<summary>microk8s only</summary>
+
+You will need to push the image into the kubernetes container registry so that microk8s can access it. 
+
 ```sh
 docker tag nodeserver-run:1.0.0 localhost:32000/nodeserver-run
 docker push localhost:32000/nodeserver-run
 helm install --name nodeserver \
   --set image.repository=localhost:32000/nodeserver-run  chart/nodeserver
 ```
+</details>
+
 
 1. Deploy your application into Kubernetes:
 
@@ -332,11 +349,17 @@ helm install --name nodeserver \
    helm install --name nodeserver chart/nodeserver
    ```
 
-***minikube only***: if an error is encountered because the previous "docker run" is still running, purge it, and retry the helm install:
+<details>
+<summary>minikube only</summary>
+
+If an error is encountered because the previous "docker run" is still running delete and retry the helm install:
+
    ```sh
    helm del --purge nodeserver
    helm install --name nodeserver chart/nodeserver
    ```
+
+</details>
 
 2. Ensure that all the "pods" associated with your application are running:
 
@@ -400,14 +423,12 @@ You can then run the following two commands in order to be able to connect to Gr
 
 ```sh
 export POD_NAME=$(kubectl get pods --namespace grafana -l "app=grafana" -o jsonpath="{.items[0].metadata.name}")
-kubectl --namespace grafana port-forward $POD_NAME 3000
+kubectl --namespace grafana port-forward $POD_NAME 4000:3000
 ```
-SR: This is impossible, 2 sections up we already port-forwarded 3000 to our application, that ports in use! I used "4000:3000" here and in the URL below
-SR: You probably want to keep the app's proxy running, because otherwise we can't access it and see the http response times in the graph that we add later in Grafana
 
 You can now connect to Grafana at the following address, using `admin` and `PASSWORD` to login:
 
-* [http://localhost:3000](http://localhost:3000)
+* [http://localhost:3001](http://localhost:3000)
 
 This should show the following screen:
 
@@ -480,11 +501,11 @@ You now have an Express.js application deployed with scaling using Docker and Ku
 
 Appsody is designed to help you develop containerized applications for the cloud.
 
-Imagine you've defined your chosen cloud technologies, and you want to reuse these technologies across all of your Node.js microservices. You can use Appsody to define the standards for your applications, which will allow you to control the base that all of your applications are built off. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You can implement and maintain your standards, ensuring consistency and reliability.
+Imagine you've defined your chosen cloud technologies, and you want to reuse these technologies across all of your Node.js microservices. You can use Appsody to define the standards for your applications, which will allow you to control the base that all of your applications are built off. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You can then maintain your standards, ensuring consistency and reliability.
 
-This also means that not all software developers in your organisation need to have the knowledge or burden of managing the full cloud-native software development stack. With Appsody, developers can build applications for the cloud that are ready to be deployed to Kubernetes without being an expert on the underlying container technology.
+This also means that not all software developers in your organisation need to have the knowledge or burden of managing the full cloud-native software development stack. With Appsody, developers can build applications for the cloud that are ready to be deployed to Kubernetes without necessarily being an expert on the underlying container technology.
 
-For more background information on Appsody - checkout this Medium post https://medium.com/appsody/overview-c0cf1f2a244c
+For more background information on Appsody - checkout [this Medium article](https://medium.com/appsody/overview-c0cf1f2a244c).
 
 ### Prerequisites
 
