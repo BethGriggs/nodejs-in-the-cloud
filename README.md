@@ -29,12 +29,22 @@ Before getting started, make sure you have the following prerequisites installed
 
 1. [Node.js 8 or later](https://nodejs.org/en/download/) or using [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
 2. Your IDE of choice
-3. [Docker for Desktop](https://www.docker.com/products/docker-desktop)
-    - If you're on Linux you should use Minikube. Follow the instructions at https://kubernetes.io/docs/tasks/tools/install-minikube/. 
+3. ***On Mac or Windows***: [Docker for Desktop](https://www.docker.com/products/docker-desktop)
+
+
+***On Linux***: Docker for Desktop is not available, alternatives are:
+- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
+- [microk8s](https://microk8s.io/#quick-start)
+
 
 ### Setting up
 
-#### Enabling Kubernetes in Docker for Desktop
+How to start Kubernetes will depend on how you intend to run it. Also, note
+that the Prometheus Helm chart is
+[not compatible](https://github.com/helm/charts/pull/17268) with
+Kubernetes 1.16, so make sure to install 1.14, see below.
+
+#### Starting Kubernetes in Docker for Desktop
 
 Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes within the application. To do so:
 
@@ -46,7 +56,26 @@ It will take a few moments to install and start up. If you already use Kubernete
 1. Select the Docker icon in the Menu Bar
 2. Click Kubernetes and select the `docker-for-desktop` context
 
+#### Starting Kubernetes in `microk8s`
 
+```sh
+snap install --channel 1.14/stable microk8s --classic
+sudo microk8s.start
+snap alias microk8s.kubectl kubectl
+export PATH=/snap/bin:$PATH
+microk8s.config >~/.kube/config
+microk8s.enable dns registry
+```
+
+You may be prompted to add your userid to the 'microk8s' group to avoid having
+to use `sudo` for all the commands.
+
+#### Starting kubernetes in `minikube`
+
+```sh
+minikube start --kubernetes-version=1.14.7
+eval $(minikube docker-env)
+```
 
 #### Installing Helm
 
@@ -221,17 +250,21 @@ Build a production Docker image for your Express.js application using the follow
 
    ```sh
    docker build --tag nodeserver-run:1.0.0 --file Dockerfile-run .
-   # OR docker build -t nodeserver-run:1.0.0 -f Dockerfile-run .
    ```
    
 You have now built a Docker image for your application called `nodeserver-run` with a version of `1.0.0`. Use the following to run your application inside the Docker container:
 
   ```sh
   docker run --interactive --publish 3000:3000 --tty nodeserver-run:1.0.0
-  # OR docker run -i -p 3000:3000 -t nodeserver-run:1.0.0
   ```
 
 This runs your Docker image in a Docker container, mapping port 3000 from the container to port 3000 on your laptop so that you can access the application.
+
+***minikube***: Docker runs in the minikube VM, so an additional step is
+required to expose the application to localhost:
+```sh
+kubectl port-forward service/nodeserver-service 3000
+```
 
 Visit your applications endpoints to check that it is running successfully:
 
@@ -285,12 +318,26 @@ Now that you have built a Helm chart for your application, the process for deplo
 
 Deploy your Express.js application into Kubernetes using the following steps:
 
+0. ***microk8s only***: Push the image into the kubernetes container registry:
+```sh
+docker tag nodeserver-run:1.0.0 localhost:32000/nodeserver-run
+docker push localhost:32000/nodeserver-run
+helm install --name nodeserver \
+  --set image.repository=localhost:32000/nodeserver-run  chart/nodeserver
+```
+
 1. Deploy your application into Kubernetes:
 
    ```sh
    helm install --name nodeserver chart/nodeserver
    ```
-   
+
+***minikube only***: if an error is encountered because the previous "docker run" is still running, purge it, and retry the helm install:
+   ```sh
+   helm del --purge nodeserver
+   helm install --name nodeserver chart/nodeserver
+   ```
+
 2. Ensure that all the "pods" associated with your application are running:
 
    ```sh
@@ -301,16 +348,10 @@ Now everything is up and running in Kubernetes. It is not possible to navigate t
 
 You can forward one of the instances ports to your laptop using the following steps:
 
-1. Find the name of one the running "pod" instances:
-   ```sh
-   kubectl get pods #Copy the nodeserver NAME
-   ```
-   
-2. Forward its port to your laptop
-
-   ```sh
-   kubectl port-forward nodeserver-deployment-XXXXXX-XXXXX 3000:3000
-   ```
+  ```sh
+  export POD_NAME=$(kubectl get pods -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 3000:3000
+  ```
 
 You can now access that pod's endpoints from your browser.
 
@@ -327,6 +368,11 @@ You can then run the following two commands in order to be able to connect to Pr
   ```sh
   export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace prometheus port-forward $POD_NAME 9090
+  ```
+
+This may fail with a warning about status being "Pending" until Prometheus has started, retry once status is "Running" for all pods:
+  ```sh
+  kubectl -n prometheus get pods --watch
   ```
 
 You can now connect to Prometheus at [http://localhost:9090](http://localhost:9090).
@@ -356,6 +402,8 @@ You can then run the following two commands in order to be able to connect to Gr
 export POD_NAME=$(kubectl get pods --namespace grafana -l "app=grafana" -o jsonpath="{.items[0].metadata.name}")
 kubectl --namespace grafana port-forward $POD_NAME 3000
 ```
+SR: This is impossible, 2 sections up we already port-forwarded 3000 to our application, that ports in use! I used "4000:3000" here and in the URL below
+SR: You probably want to keep the app's proxy running, because otherwise we can't access it and see the http response times in the graph that we add later in Grafana
 
 You can now connect to Grafana at the following address, using `admin` and `PASSWORD` to login:
 
@@ -365,12 +413,12 @@ This should show the following screen:
 
 ![grafana-home](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-home.png)
 
-In order to connect Grafana to the Prometheus service, next click on **Add data source**.
+In order to connect Grafana to the Prometheus service, next click on **Add data source** and select the first Time series database, "Prometheus".
 
 This opens the a panel that should be filled out with the following entries:
 
 * Name: `Prometheus`
-* Type: `Prometheus`
+* Type: `Prometheus` (may not be preset for some versions of Grafana)
 * URL: `http://prometheus-server.prometheus.svc.cluster.local`
 
 ![grafana-datasource](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-datasource.png)
@@ -387,9 +435,11 @@ To install one of those dashboards, click on the **+** icon and select **Import*
 
 In the provided panel, enter `1621` into the **Grafana.com Dashboard** field in order to import dashboard number 1621, and press **Tab**.
 
+Note: If `1621` is not recognized, it may be necessary to download the JSON for [1621](https://grafana.com/grafana/dashboards/1621) (select "Download JSON"), and use "Upload JSON" in the Grafana UI.
+
 This then loads the information on dashboard `1621` from Grafana.com.
 
-Set the **Prometheus** field to `Prometheus` and click **Import**.
+Change the **Prometheus** field to `Prometheus` from "Compliant with Prometheus 1.5.2" and click **Import**.
 
 ![grafana-dashboard-import](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-import-select.png)
 
@@ -401,11 +451,13 @@ In order to extend the dashboard with your own graphs, click the **Add panel** i
 
 ![grafana-add-graph](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-add-graph.png)
 
+On some Grafana versions, after you click Add panel in toolbar, it is necessary to select ***Choose Visualization*** before selecting **Graph**.
+
 This creates a blank graph. Select the **Panel Title** pull down menu and select **Edit**.
 
 This opens an editor panel where you can select data that you'd like to graph.
 
-Type `os_cpu_used_ratio` into the data box, and a graph of your applications CPU data will show on the panel.
+Type `os_cpu_used_ratio` into the data box (or "Metrics" box on some version of Grafana), and a graph of your applications CPU data will show on the panel.
 
 You can create more complex queries and apply filters according to any kubernetes value. For example, the following will show all of the HTTP request durations for your specific application:
 
