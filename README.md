@@ -37,10 +37,7 @@ Before getting started, make sure you have the following prerequisites installed
 
 ### Setting up
 
-How to start Kubernetes will depend on how you intend to run it. Also, note
-that the Prometheus Helm chart is
-[not compatible](https://github.com/helm/charts/pull/17268) with
-Kubernetes 1.16, so make sure to install 1.14, see below.
+How to start Kubernetes will depend on how you intend to run it.
 
 #### Starting Kubernetes
 
@@ -71,6 +68,10 @@ microk8s.enable dns registry
 
 You may be prompted to add your userid to the 'microk8s' group to avoid having to use `sudo` for all the commands.
 
+Note that the Prometheus Helm chart is
+[not compatible](https://github.com/helm/charts/pull/17268) with
+Kubernetes 1.16, so make sure to install 1.14.
+
 </details>
 
 #### `minikube`
@@ -81,6 +82,10 @@ You may be prompted to add your userid to the 'microk8s' group to avoid having t
 minikube start --kubernetes-version=1.14.7
 eval $(minikube docker-env)
 ```
+
+Note that the Prometheus Helm chart is
+[not compatible](https://github.com/helm/charts/pull/17268) with
+Kubernetes 1.16, so make sure to run with 1.14.7.
 </details>
 
 #### Installing Helm
