@@ -44,7 +44,7 @@ Kubernetes 1.16, so make sure to install 1.14, see below.
 
 #### Starting Kubernetes
 
-#### Docker for Desktop 
+#### `Docker for Desktop`
 
 Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes within the application. To do so:
 
