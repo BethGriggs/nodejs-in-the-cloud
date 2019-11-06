@@ -369,18 +369,17 @@ If an error is encountered because the previous "docker run" is still running de
 
 Now everything is up and running in Kubernetes. It is not possible to navigate to `localhost:3000` as usual because your cluster isn't part of the localhost network, and because there are several instances to choose from.
 
-You can forward one of the instances ports to your laptop using the following steps:
+You can forward the nodeserver-service to your laptop by:
 
   ```sh
-  export POD_NAME=$(kubectl get pods -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME 3000:3000
+  kubectl port-forward service/nodeserver-service 3000
   ```
 
-You can now access that pod's endpoints from your browser.
+You can now access the application endpoints from your browser.
 
 ## 7. Monitoring your Application with Prometheus
 
-Installing Prometheus into Kubernetes can be done using its provided Helm chart:
+Installing Prometheus into Kubernetes can be done using its provided Helm chart. This step needs to be done in a new Terminal window as you'll need to keep the application port-forwarded to `localhost:3000`.
 
   ```sh
     helm install stable/prometheus --name prometheus --namespace prometheus
@@ -423,12 +422,12 @@ You can then run the following two commands in order to be able to connect to Gr
 
 ```sh
 export POD_NAME=$(kubectl get pods --namespace grafana -l "app=grafana" -o jsonpath="{.items[0].metadata.name}")
-kubectl --namespace grafana port-forward $POD_NAME 4000:3000
+kubectl --namespace grafana port-forward $POD_NAME 3001:3000
 ```
 
 You can now connect to Grafana at the following address, using `admin` and `PASSWORD` to login:
 
-* [http://localhost:3001](http://localhost:3000)
+* [http://localhost:3001](http://localhost:3001)
 
 This should show the following screen:
 
@@ -460,7 +459,7 @@ Note: If `1621` is not recognized, it may be necessary to download the JSON for 
 
 This then loads the information on dashboard `1621` from Grafana.com.
 
-Change the **Prometheus** field to `Prometheus` from "Compliant with Prometheus 1.5.2" and click **Import**.
+Change the **Prometheus** field to `Prometheus` from `Compliant with Prometheus 1.5.2` and click **Import**.
 
 ![grafana-dashboard-import](https://raw.githubusercontent.com/CloudNativeJS/tutorial/master/resources/grafana-import-select.png)
 
