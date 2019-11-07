@@ -6,11 +6,11 @@ The first part of this workshop will teach you how to extend a simple Express.js
 
 The second part of the workshop will demonstrate tooling to help you develop all of your cloud-native applications from a consistent base.
 
-## Part 1: Extending an Express.js application to leverage Cloud Capabilties 
+## Part 1: Extending an Express.js application to leverage Cloud Capabilities
 
-### Building a Cloud Ready Express.js Application
+### Building a Cloud-Ready Express.js Application
 
-This will show you how to take a Node.js application and make it "cloud ready": adding support for Cloud Native Computing Foundation (CNCF) technologies using the package and templates provided by the [CloudNativeJS](https://www.cloudnativejs.io/) project.
+This will show you how to take a Node.js application and make it "cloud-ready": adding support for Cloud Native Computing Foundation (CNCF) technologies using the package and templates provided by the [CloudNativeJS](https://www.cloudnativejs.io/) project.
 
 In this self-paced tutorial, you will:
 
@@ -48,7 +48,7 @@ Ensure you have installed Docker for Desktop on your Mac and enabled Kubernetes 
 1. Select the Docker icon in the Menu Bar
 2. Click Preferences/Settings > Kubernetes Tab > Enable Kubernetes.
 
-It will take a few moments to install and start up. If you already use Kubernetes, ensure that you are configured to use the `docker-for-desktop` cluster. To do so:
+It will take a few moments to install and start-up. If you already use Kubernetes, ensure that you are configured to use the `docker-for-desktop` cluster. To do so:
 
 1. Select the Docker icon in the Menu Bar
 2. Click Kubernetes and select the `docker-for-desktop` context
@@ -326,7 +326,7 @@ Go ahead and modify the `chart/nodeserver/values.yaml` file to use your image, a
 3. Ensure that the `pullPolicy` is set to `IfNotPresent`
 4. Change the `replicaCount` value to `3`
 
-The `repository` field gives the name of the Docker image to use. The `pullPolicy` change tells Kuberentes to use a local Docker image if there is one available rather than always pulling the Docker image from a remote repository. Finally, the `replicaCount` states how many instances to deploy.
+The `repository` field gives the name of the Docker image to use. The `pullPolicy` change tells Kubernetes to use a local Docker image if there is one available rather than always pulling the Docker image from a remote repository. Finally, the `replicaCount` states how many instances to deploy.
  
 ## 6. Deploying your Application to Kubernetes
 
@@ -505,7 +505,7 @@ You now have an Express.js application deployed with scaling using Docker and Ku
 
 Appsody is designed to help you develop containerized applications for the cloud.
 
-Imagine you've defined your chosen cloud technologies, and you want to reuse these technologies across all of your Node.js microservices. You can use Appsody to define the standards for your applications, which will allow you to control the base that all of your applications are built off. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You can then maintain your standards, ensuring consistency and reliability.
+Imagine you've defined your chosen cloud technologies, and you want to reuse these technologies across all of your Node.js micro-services. You can use Appsody to define the standards for your applications, which will allow you to control the base that all of your applications are built off. You can define a set of technologies that are configurable, reusable, and already infused with cloud native capabilities. You can then maintain your standards, ensuring consistency and reliability.
 
 This also means that not all software developers in your organisation need to have the knowledge or burden of managing the full cloud-native software development stack. With Appsody, developers can build applications for the cloud that are ready to be deployed to Kubernetes without necessarily being an expert on the underlying container technology.
 
@@ -519,7 +519,7 @@ Before getting started, you’ll need to install the Appsody CLI.
 
 Verify that Appsody is installed by typing `appsody version`.
 
-### Getting to know Apposdy
+### Getting to know Appsody
 
 `appsody`
 
@@ -583,7 +583,7 @@ experimental	vertx                    	0.1.4    	*default         	Eclipse Vert.
 *incubator  	swift                    	0.2.0    	*simple          	Runtime for Swift applications   
 ```
 
-You’ll see that with the stacks available, we can develop new cloud-native applications using many lanugauges with a number of different, popular frameworks.
+You’ll see that with the stacks available, we can develop new cloud-native applications using many languages with a number of different, popular frameworks.
 
 
 You can also register new Appsody repositories containing stacks created from the ground up or as forks of the default stacks shipped with Appsody. 
@@ -675,7 +675,7 @@ module.exports.app = app;
 
 This creates an instance of an Express.js app, and then registers a handler for get() requests on `/` that send() a response of "Hello from Appsody!".
 
-The crucial characteristic that is required for the application to work with the `nodejs-express` Appsody Stack is that the application exports the create Express.js app using the following line:
+The crucial characteristic that is required for the application to work with the `nodejs-express` Appsody Stack is that the application exports the created Express.js app using the following line:
 
 ```js
 module.exports.app = app;
@@ -687,7 +687,7 @@ Ths is required as the Appsody Stack will apply the exported app onto its own pr
 
 Now that you have created your application, the next step is to see it running. To do that you can use the appsody run command in a terminal window. Alternatively, if you use VS Code, you can use the tasks that have been configured in the .vscode directory that was added as part of the template project.
 
-1. Run your applcation using:
+1. Run your application using:
     1. From the terminal: `appsody run`
     2. In VSCode: Terminal > Run Task… > Appsody: run
 
@@ -695,7 +695,7 @@ Now that you have created your application, the next step is to see it running. 
 
 2. Connect to the application in your browser at [http://localhost:3000](http://localhost:3000). This responds with `Hello from Appsody!`.
 
-In addition to the handler for get requests on `/` that was defined in `app.js`, some other capabilities have been added by the Appsody Stack itself, these include health, liveness and readiness endpoints, a metrics endpoint, and an application performance analysis dashboard (during development only).
+In addition to the handler for GET requests on `/` that was defined in `app.js`, some other capabilities have been added by the Appsody Stack itself, these include health, liveness and readiness endpoints, a metrics endpoint, and an application performance analysis dashboard (during development only).
 
 3. View the additional cloud-native capabilities that come prepackaged with the `nodejs-express` stack:
     - Health Endpoint: http://localhost:3000/health
@@ -819,7 +819,7 @@ You should see something like:
 
 These endpoints are provided by the stack health checks generated by the project starter.
 
-Finally, let’s undeploy the application by entering:
+Finally, let’s 'undeploy' the application by entering:
 
 ```
 appsody deploy delete
@@ -836,7 +836,7 @@ Deployment deleted
 ....
 ```
 
-Check that everything was undeployed using:
+Check that everything was 'undeployed' using:
 
 ```
 kubectl get all
@@ -908,7 +908,7 @@ drwxr-xr-x   10 bgriggs  staff    320 Oct  8 14:04 user-app
 
 These are the files for the project, including those provided by the stack. For example, the `package.json` has the core application definition for your application, and the Dockerfile is the one used to build and package the application. The user-app directory contains the Node.js project for your application.
 
-You have seen how Appsody stacks and templates make it easy to get started with a new project, using a curated and consistent development and production environment. You have also seen how Appsody makes it really easy to build production-ready containers and deploy them to a Kubernetes environment.
+You have seen how Appsody stacks and templates make it easy to get started with a new project, using a curated and consistent development and production environment. You have also seen how Appsody makes it easy to build production-ready containers and deploy them to a Kubernetes environment.
 
 :tada: 
 
