@@ -168,7 +168,7 @@ Add a Health Check endpoint to your Express.js application using the following s
 1. Add the `@cloudnative/health-connect` dependency to your project:
    
    ```sh
-   npm install --save @cloudnative/health-connect
+   npm install @cloudnative/health-connect
    ```
 
 2. Set up a HealthChecker in `app.js`:
@@ -211,7 +211,7 @@ Add a `/metrics` Prometheus endpoint to your Express.js application using the fo
 1. Add the `appmetrics-prometheus` dependency to your project
    
    ```sh
-   npm install --save appmetrics-prometheus
+   npm install appmetrics-prometheus
    ```
 
 2. 	Require `appmetrics-prometheus` and attach it to your Express server:
